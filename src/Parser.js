@@ -46,13 +46,20 @@ function parseContent(textRequest) {
         //HEADERS
         let headers = textRequest.substring(textRequest.indexOf("Headers"));
         headers = headers.substring(headers.indexOf("{"), headers.indexOf("- Body:"));
-        headers = headers.replaceAll("=", ":");
-        request.headers = headers;
+        headers = headers.substring(headers.indexOf("{")+1, headers.lastIndexOf("}"));
+
+        const headerMap = {};
+        headers.replaceAll("], ", "]---").split("---").forEach((header) => {
+            const key = header.substring(0, header.indexOf("="));
+            headerMap[key] = header.substring(header.indexOf("[")+1, header.lastIndexOf("]"));
+        });
+
+        request.headers = headerMap;
 
         //Body
         let body = textRequest.substring(textRequest.indexOf("- Body:"));
         if (body.includes("[Empty]")) {
-            request.body = "[Empty]"
+            request.body = ""
         } else {
             body = body.substring(body.indexOf("{"));
             body = body.substring(0, body.lastIndexOf("}") + 1);
