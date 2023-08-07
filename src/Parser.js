@@ -14,7 +14,7 @@ export default function parse(text) {
     }
 
     if (text.includes("[TRACING MOCK]: [REST CONNECTOR]")) {
-        result.response = parseContent(text.substring(0, text.indexOf("[RESPONSE]")));
+        result.request = parseContent(text.substring(0, text.indexOf("[RESPONSE]")));
         result.response = parseContent(text.substring(text.indexOf("[RESPONSE]")));
     }
 
@@ -37,9 +37,11 @@ function parseContent(textRequest) {
         }
 
         //URI
-        let uri = textRequest.substring(textRequest.indexOf("URI") + 5);
-        uri = uri.substring(0, uri.indexOf("Headers") - 3);
-        request.uri = uri;
+        if (textRequest.includes("URI")) {
+            let uri = textRequest.substring(textRequest.indexOf("URI") + 5);
+            uri = uri.substring(0, uri.indexOf(" - "));
+            request.uri = uri;
+        }
 
         //HEADERS
         let headers = textRequest.substring(textRequest.indexOf("Headers"));
