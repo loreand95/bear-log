@@ -1,38 +1,162 @@
-.App {
-  text-align: center;
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    background-color: #FFF;
+    margin: 0;
+    padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+div {
+    box-sizing: border-box;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+h1 {
+    font-family: "Paskowy", serif;
+    font-weight: normal;
+    margin-bottom: 0;
 }
 
-.App-link {
-  color: #61dafb;
+@font-face {
+    font-family: 'Paskowy';
+    src: local('Paskowy'), url(./assets/fonts/Paskowy.ttf);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.left-container {
+    flex: 0 1 30%;
+    min-height: 100%;
+    max-width: 30%;
+    padding: 20px;
+
+}
+
+.right-container {
+    flex: 0 1 70%;
+    display: flex;
+    height: 100%;
+    max-width: 70%;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 20px;
+    max-height: 100%;
+    box-sizing: border-box;
+}
+
+.right-content {
+    height: 100%;
+    width: 100%;
+    align-items: flex-start;
+    padding: 20px;
+    border: gray 1px solid;
+    border-radius: 5px;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.textarea {
+    padding:25px;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    max-height: 100%;
+    overflow: auto;
+}
+
+.json-view {
+    --json-property: #009033;
+    --json-index: #676dff;
+    --json-number: #676dff;
+    --json-string: #b2762e;
+    --json-boolean: #dc155e;
+    --json-null: #dc155e;
+}
+
+.json-view .json-view--property {
+    color: var(--json-property);
+}
+
+.json-view .json-view--index {
+    color: var(--json-index);
+}
+
+.json-view .json-view--number {
+    color: var(--json-number);
+}
+
+.json-view .json-view--string {
+    color: var(--json-string);
+}
+
+.json-view .json-view--boolean {
+    color: var(--json-boolean);
+}
+
+.json-view .json-view--null {
+    color: var(--json-null);
+}
+
+.json-view:hover > .json-view--copy {
+    display: inline-block;
+}
+
+.json-view .json-view--pair:hover > .json-view--copy {
+    display: inline-block;
+}
+
+.json-view .json-view--copy {
+    display: none;
+    width: 1em;
+    height: 1em;
+    margin-left: 4px;
+    vertical-align: -11%;
+    cursor: pointer;
+}
+
+.json-view .jv-indent {
+    padding-left: 16px;
+}
+
+.json-view .jv-chevron {
+    display: inline-block;
+    vertical-align: -20%;
+    cursor: pointer;
+    opacity: 0.4;
+}
+
+.json-view .jv-chevron:hover {
+    opacity: 0.8;
+}
+
+.json-view .jv-button {
+    background: transparent;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+.json-view .cursor-pointer {
+    cursor: pointer;
+}
+
+span {
+    font-size: 12px;
 }
