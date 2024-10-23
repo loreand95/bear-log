@@ -13,7 +13,7 @@ function App() {
       const res = parse(params.get("v"));
       setValue(res);
     }
-  }, [value]);
+  }, [params, value]);
 
   const handleChange = (event) => {
     const res = parse(event.target.value);
