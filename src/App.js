@@ -4,21 +4,17 @@ import parse from "./Parser";
 import JsonView from "react18-json-view";
 
 function App() {
-  const params = new URLSearchParams(window.location.search);
-
-  const [value, setValue] = useState(params.get("v") || "");
+  const [value, setValue] = useState("");
+  const [textValue, setTextValue] = useState("");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     if (params.get("v")) {
-      const res = parse(params.get("v"));
-      setValue(res);
+      setValue(parse(params.get("v")));
+      setTextValue(params.get("v"));
     }
-  }, [params, value]);
-
-  const handleChange = (event) => {
-    const res = parse(event.target.value);
-    setValue(res);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={"container"}>
@@ -30,9 +26,11 @@ function App() {
           <textarea
             type="text"
             id="message"
-            onChange={handleChange}
+            onChange={(event) => {
+              setValue(parse(event.target.value));
+            }}
+            defaultValue={textValue}
             className={"textarea"}
-            defaultValue={value}
             placeholder={"Paste your log here"}
           />
         </div>
