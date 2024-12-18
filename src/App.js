@@ -2,6 +2,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import parse from "./Parser";
 import JsonView from "react18-json-view";
+import Coffee from "./components/Coffee";
 
 function App() {
   const [value, setValue] = useState("");
@@ -20,6 +21,7 @@ function App() {
     <div className={"container"}>
       <div>
         <h1>Bear 🐻 Log</h1>
+        <Coffee />
       </div>
       <div className={"main-container"}>
         <div className={"left-container"}>
