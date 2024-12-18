@@ -1,19 +1,19 @@
 export default function parse(text) {
 
-    if (!text.includes("[BEAR-ARCH] [TRACING MOCK]")) {
-        return { error: "Log must contain the following value: [BEAR-ARCH] [TRACING MOCK]" }
+    if (!text.includes("[BEAR-ARCH] [TRACING MOCK]") && !text.includes("[BEAR-ARCH] \"[TRACING LOG]")) {
+        return { error: "Log must contain at least one of the following values: '[BEAR-ARCH] [TRACING MOCK]', '[BEAR-ARCH] \"[TRACING LOG]'" }
     }
     const result = {}
 
-    if (text.includes("[TRACING MOCK]: [API REQUEST]")) {
+    if (text.includes("[TRACING MOCK]: [API REQUEST]") || text.includes("[TRACING LOG]: [API REQUEST]")) {
         result.request = parseContent(text, true);
     }
 
-    if (text.includes("[TRACING MOCK]: [API RESPONSE]")) {
+    if (text.includes("[TRACING MOCK]: [API RESPONSE]") || text.includes("[TRACING LOG]: [API RESPONSE]")) {
         result.response = parseContent(text, false);
     }
 
-    if (text.includes("[TRACING MOCK]: [REST CONNECTOR]")) {
+    if (text.includes("[TRACING MOCK]: [REST CONNECTOR]") || text.includes("[TRACING LOG]: [REST CONNECTOR]")) {
         result.request = parseContent(text.substring(0, text.indexOf("[RESPONSE]")), true);
         result.response = parseContent(text.substring(text.indexOf("[RESPONSE]")), false);
     }
@@ -59,6 +59,7 @@ function parseContent(textRequest, computeCurl) {
 
         const paramsMap = {};
         params.replaceAll("], ", "]---").split("---").forEach((params) => {
+            if (!params) return;
             const key = params.substring(0, params.indexOf("="));
             paramsMap[key] = params.substring(params.indexOf("[") + 1, params.lastIndexOf("]"));
         });
@@ -83,8 +84,10 @@ function parseContent(textRequest, computeCurl) {
         if (body.includes("[Empty]")) {
             request.body = ""
         } else {
-            body = body.substring(body.indexOf("{"));
-            body = body.substring(0, body.lastIndexOf("}") + 1);
+            let body_delimiter_start = body.indexOf('{') < body.indexOf('[') && body.includes('{') ? '{' : '[';
+            let body_delimiter_end = body_delimiter_start === '{' ? '}': ']';
+            body = body.substring(body.indexOf(body_delimiter_start));
+            body = body.substring(0, body.lastIndexOf(body_delimiter_end) + 1);
             request.body = JSON.parse(body);
         }
 
@@ -138,6 +141,10 @@ function getCurl(request) {
             let host = request.headers["x-forwarded-host"].split(',')[0].trim();
             let protocol = request.headers["x-forwarded-proto"].split(',')[0].trim();
             curl += `${spaceBackSlashNewLine}--location '${protocol}://${host}${uri}'`;
+        } else if (request.headers.hasOwnProperty("host") && request.headers.hasOwnProperty("x-forwarded-proto")) {
+            let host = request.headers["host"].split(',')[0].trim();
+            let protocol = request.headers["x-forwarded-proto"].split(',')[0].trim();
+            curl += `${spaceBackSlashNewLine}--location '${protocol}://${host}${uri}'`;
         } else {
             curl += `${spaceBackSlashNewLine}--location 'NEEDED-MANUAL-EDIT${uri}'`;
         }
@@ -155,7 +162,7 @@ function getCurl(request) {
 
     // body
     if (!isEmpty(request.body)) {
-        curl += `--data '${JSON.stringify(request.body)}'`;
+        curl += `${spaceBackSlashNewLine}--data '${JSON.stringify(request.body)}'`;
     }
 
     return curl;
