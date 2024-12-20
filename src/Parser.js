@@ -84,7 +84,7 @@ function parseContent(textRequest, computeCurl) {
         if (body.includes("[Empty]")) {
             request.body = ""
         } else {
-            let body_delimiter_start = body.indexOf('{') < body.indexOf('[') && body.includes('{') ? '{' : '[';
+            let body_delimiter_start = !body.includes('{') || !body.includes('[') || body.indexOf('{') < body.indexOf('[') ? '{' : '[';
             let body_delimiter_end = body_delimiter_start === '{' ? '}': ']';
             body = body.substring(body.indexOf(body_delimiter_start));
             body = body.substring(0, body.lastIndexOf(body_delimiter_end) + 1);
