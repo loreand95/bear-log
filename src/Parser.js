@@ -80,14 +80,12 @@ function parseContent(textRequest, computeCurl) {
         request.headers = headerMap;
 
         //Body
-        let body = textRequest.substring(textRequest.indexOf("- Body:"));
+        const regexBody = /- Body: (\{.*?}|\[.*?])(?:\s*-{3}|\s)/s;
+        let body = textRequest.match(regexBody)[1];
+        console.log(body);
         if (body.includes("[Empty]")) {
             request.body = ""
         } else {
-            let body_delimiter_start = !body.includes('{') || !body.includes('[') || body.indexOf('{') < body.indexOf('[') ? '{' : '[';
-            let body_delimiter_end = body_delimiter_start === '{' ? '}': ']';
-            body = body.substring(body.indexOf(body_delimiter_start));
-            body = body.substring(0, body.lastIndexOf(body_delimiter_end) + 1);
             request.body = JSON.parse(body);
         }
 
